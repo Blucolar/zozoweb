@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { EyeOn, EyeOff, GoogleIcon } from "../public/svg/icons";
 import { LoginBanner } from "../public/svg/images";
 import Button from "../components/ui/Button";
@@ -7,9 +8,13 @@ import styles from "../styles/login.module.scss";
 
 export default function Index() {
   const [inputType, setInputType] = useState("password");
+  const history = useHistory();
 
   function loginHandler(e) {
     e.preventDefault();
+    const token = "qwertyuisdfghjk";
+    localStorage.setItem("token", token);
+    history.push("/cart");
   }
 
   return (

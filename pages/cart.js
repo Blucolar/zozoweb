@@ -33,7 +33,7 @@ const Cart = () => {
               <p className={`${styles.purple_text} mt-3`}>Bid on today's deals</p>
               <div className="flex gap-10 mt-12">
                 <div className="">
-                  <Link href="/checkout">
+                  <Link href="/login-cart">
                     <a>
                     <Button
                       name="SIGN IN TO YOUR ACCOUNT"
