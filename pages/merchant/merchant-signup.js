@@ -8,7 +8,7 @@ import styles from "../../styles/Merchantlogin.module.scss";
 import Button from "../../components/ui/Button";
 import Link from "next/link";
 
-const MerchantLogin = () => {
+const MerchantSignup = () => {
   return (
     <div>
       <div className="flex">
@@ -16,7 +16,7 @@ const MerchantLogin = () => {
           <div className="pt-20">
             <Image src={logo} />
           </div>
-          <h2 className="text-center pt-20">Welcome Back</h2>
+          <h2 className="text-center pt-20">Create Account</h2>
           <div className="mt-10 text-center">
             <Image src={google} />
           </div>
@@ -30,33 +30,29 @@ const MerchantLogin = () => {
             <br />
             <input type="text" id="password" name="password" />
             <br />
-           
+            <label for="confirmpassword"> Confirm Password</label>
+            <br />
+            <input
+              type="text"
+              id="confirmpassword"
+              name="confirmpassword"
+            />{" "}
           </form>
-          <div className="flex gap-96">
-            <div>
-                <input type="checkbox" name="Remember me" id="" />
-                <label for="rememberme">Remember me</label>
-            
-            </div>
-            <div>
-                <Link href="/merchant/forgot-password">
-                    Forgot Password?
-                </Link>
-            </div>
+          <div className=" pl-60 mt-10">
+            <Image src={robot} />
           </div>
-          <div className="mt-60">
+          <div className="mt-20">
             <Button
-              name="LOG IN"
+              name="CONTINUE"
               paddingY="7px"
               paddingX="30px"
               fontSize="14px"
               width="600px"
             />
           </div>
-          
           <div className="text-center">
-            Don't have an account?
-            <Link href="/merchant/merchant-signup " className={`${styles.purple}`}>Sign up for free</Link>
+            Already have an account?
+            <Link href="/merchant/merchant-login">Login</Link>
           </div>
         </div>
         <div className="w-1/2">
@@ -67,4 +63,4 @@ const MerchantLogin = () => {
   );
 };
 
-export default MerchantLogin;
+export default MerchantSignup;
