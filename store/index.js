@@ -9,6 +9,8 @@ import adminAuthSlice from "./slices/adminSlice/usersSlice";
 import usersSlice from "./slices/adminSlice/usersSlice";
 import adminEvent from "./slices/adminSlice/adminEventSlice";
 import cartSlice from "./slices/cartSlice";
+import walletSlice from "./slices/adminSlice/walletSlice";
+import merchantSlice from "./slices/merchantSlice";
 
 const persistConfig = {
   key: "zozo",
@@ -23,10 +25,12 @@ export const store = configureStore({
     categories: categoriesSlice,
     events: eventsSlice,
     cart: cartSlice,
+    merchant: merchantSlice,
 
     //ADMIN
     users: usersSlice,
     adminEvent: adminEvent,
+    wallet:walletSlice
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: [thunk],

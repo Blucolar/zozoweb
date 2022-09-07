@@ -1,6 +1,6 @@
 import React from "react";
 import CustomerLayout from "../components/CustomerLayout";
-import styles from "./../styles/cart.module.scss";
+import styles from "./../styles/watchlist.module.scss";
 import Image from "next/image";
 import email from "../assets/email.svg";
 import card from "../assets/card.svg";
@@ -18,20 +18,20 @@ import axios from "axios";
 const Checkout = () => {
 	const { user } = useSelector((state) => state.auth.customer);
 
-	const { events, subTotal } = useSelector((state) => state.events.won);
+
+	const { events, subTotal, winners_id } = useSelector((state) => state.events.won);
 	console.log(user);
 	console.log(subTotal);
 	const config = {
 		reference: new Date().getTime().toString(),
 		email: user.email,
-		amount: subTotal,
-		// amount: subTotal * 100,
+		 amount: subTotal * 100,
 		publicKey: "pk_test_69632545288d812cae292185bebcfb87ca0feded",
 	};
 	const initializePayment = usePaystackPayment(config);
 	const onSuccess = (reference) => {
 		axios.post(`/customer/bidding/checkout`, {
-			winner_id: user.id.toString(),
+			winner_ids: winners_id,
 			payment_reference: reference.reference,
 		}).then((response)=>{
 			console.log(response)

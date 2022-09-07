@@ -15,7 +15,7 @@ function Footer() {
     <footer className={styles.container}>
       <div className={styles.first_section}>
         <div
-          style={{ maxWidth: 1440 }}
+          // style={{ maxWidth: 1440 }}
           className={`flex justify-between py-7 align-center w-11/12 mx-auto `}
         >
           <div className="my-auto">
@@ -97,17 +97,17 @@ function Footer() {
                 Information{" "}
               </li>
 
-              <Link href="/">
+              <Link href="/terms">
                 <li>
                   <a>Terms of Use </a>
                 </li>
               </Link>
-              <Link href="/">
+              <Link href="/privacy">
                 <li>
                   <a>Privacy Policy </a>
                 </li>
               </Link>
-              <Link href="/">
+              {/* <Link href="/">
                 <li>
                   <a>Sitemap</a>
                 </li>
@@ -116,7 +116,7 @@ function Footer() {
                 <li>
                   <a>Partnership </a>
                 </li>
-              </Link>
+              </Link> */}
             </ul>
           </div>
 
@@ -126,17 +126,13 @@ function Footer() {
                 About Us
               </li>
 
-              <Link href="/">
+              <Link href="/about">
                 <li>
                   <a>About Zozo </a>
                 </li>
               </Link>
-              <Link href="/">
-                <li>
-                  <a>Zozo Blog </a>
-                </li>
-              </Link>
-              <Link href="/">
+             
+              <Link href="/contact">
                 <li>
                   <a>Contact Us</a>
                 </li>
