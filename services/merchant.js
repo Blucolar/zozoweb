@@ -17,7 +17,7 @@ export function getProducts(merchant_id) {
 }
 
 export function createBidEvent(body) {
-  return axios.post(`merchant/bidding`, body);
+  return axios.post(`/merchant/bidding`, body);
 }
 
 export function getBidEvents(merchant_id) {
@@ -70,4 +70,8 @@ export function updateProfile(merchant_id) {
 
 export function updateAddress(merchant_id, body) {
   return axios.patch(`/merchant/address/${merchant_id}`, body);
+}
+
+export function addBankAccount(merchant_id, body) {
+  return axios.post(`/merchant/bank/${merchant_id}`, body);
 }

@@ -5,14 +5,18 @@ import {
 	singleCustomer,
 	verifyUser,
 } from "../../store/slices/adminSlice/usersSlice";
-
+import { useRouter } from "next/router";
 import Image from "next/image";
 import AdminLayout from "../../components/Admin/AdminLayout";
 import Modal from "../../components/modal/modal";
 import Table from "../../components/Table/Table";
 import Button from "../../components/ui/Button";
 import styles from "../../styles/admin/customerMgt.module.scss";
-import { GreenMarker, VerifiedMarkIcon } from "../../public/svg/icons";
+import {
+	ExclamationIcon,
+	GreenMarker,
+	VerifiedMarkIcon,
+} from "../../public/svg/icons";
 import Pagination from "../../components/Pagination";
 import { paginate, truncateString } from "../../utils";
 import Loader from "../../components/loader";
@@ -28,7 +32,7 @@ function CustomerMgt() {
 		"Verification Status",
 	];
 	const [modalDisplay, setModalDisplay] = useState(false);
-
+	const router = useRouter();
 	const [currentPage, setCurrentPage] = useState(1);
 	const { width } = useWindowDimension();
 	const pageSize = 10;
@@ -55,14 +59,28 @@ function CustomerMgt() {
 	return (
 		<AdminLayout>
 			<div className="pt-10 w-11/12 mx-auto pb-20 mt-1  h-full">
-				<h3 className="lg:py-20  py-10 lg:text-5xl  text-4xl font-semibold mt-1 text-semibold text-black">
+				<h3 className="lg:py-20  py-10 lg:text-5xl  text-4xl font-semibold mt-1 text-semibold text-black text-center lg:text-left md:text-left">
 					Customer Management
 				</h3>
-				{users.length < 1 ? (
+				{paginatedData && users.length < 1 && (
+					<div className=" h-screen">
+						<div
+							className="flex justify-center mt-20 text-2xl lg:text-4xl items-center"
+							style={{ color: "#743B96", marginTop: "120px" }}
+						>
+							<ExclamationIcon width="35" />
+							<span className="pl-5">No Registered Customer</span>
+						</div>
+					</div>
+				)}
+
+				{customerDetailsLoading && (
 					<div className="h-screen" style={{ marginTop: "-160px" }}>
 						<Loader />
 					</div>
-				) : width >= 780 ? (
+				)}
+
+				{paginatedData && users.length > 1 && width >= 780 && (
 					<>
 						<Table
 							name="customerMgt"
@@ -79,7 +97,9 @@ function CustomerMgt() {
 							pageSize={pageSize}
 						/>
 					</>
-				) : (
+				)}
+
+				{paginatedData && users.length > 1 && width < 780 && (
 					<>
 						{paginatedData.map((item, index) => {
 							return (
@@ -202,13 +222,15 @@ function CustomerMgt() {
 												isBoxShadow={true}
 												border="none"
 												className="mt-3 lg:mt-1"
-												onClick={() =>
+												onClick={() => {
 													dispatch(
 														verifyUser({
 															account_id: user.account.id.toString(),
 														})
-													)
-												}
+													);
+
+													router.reload(window.location.pathname);
+												}}
 											/>
 										)}
 									</div>
@@ -227,7 +249,7 @@ function CustomerMgt() {
 									<div className="lg:text-3xl text-2xl font-semibold  ">
 										<p className="w-40 lg:w-full mt-7 lg:mt-10">First name :</p>
 										<p className=" w-40 lg:w-full mt-7 lg:mt-10">Last name :</p>
-										<p className=" w-48 lg:w-full mt-7 lg:mt-10">
+										<p className=" w-52 lg:w-full mt-7 lg:mt-10">
 											Phone number :
 										</p>
 										<p className=" w-40 lg:w-full mt-7 lg:mt-10">Email :</p>
@@ -257,3 +279,4 @@ function CustomerMgt() {
 }
 
 export default CustomerMgt;
+CustomerMgt.requireAdminAuth = true;

@@ -8,7 +8,7 @@ import Modal from "../../components/modal/modal";
 import Image from "next/image";
 import Button from "../../components/ui/Button";
 import Link from "next/link";
-import { Bag, Car, Chain } from "../../public/svg/icons";
+import { Bag, Car, Chain, ExclamationIcon } from "../../public/svg/icons";
 import { useSelector, useDispatch } from "react-redux";
 import {
 	customerList,
@@ -32,18 +32,17 @@ function Dashboard() {
 		dispatch(getAllEvents());
 	}, [dispatch]);
 
-	// console.log(allEvent);
 	let fiveMerchant;
 	let fiveCustomer;
 	let topAuctions;
 	if (merchants.users) fiveMerchant = merchants.users.slice(0, 5);
 	if (customers.users) fiveCustomer = customers.users.slice(0, 5);
+	console.log(fiveMerchant);
 	if (allEvent) {
 		let arraySort = [...allEvent];
 		topAuctions = arraySort
 			.sort((a, b) => Number(b.access_amount) - Number(a.access_amount))
 			.slice(0, 5);
-		console.log(topAuctions);
 	}
 	const viewDetails = () => {
 		setModalDisplay((modalDisplay) => !modalDisplay);
@@ -62,11 +61,13 @@ function Dashboard() {
 				<div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 mt-10  gap-4">
 					<div className="bg-white px-5 pt-10 pb-10 mb-20 rounded-lg shadow-lg">
 						<h3 className=" ml-6 mb-10">Customer list</h3>
-						{customers && customers.isLoading ? (
+						{customers.isLoading && !fiveCustomer && (
 							<div className="py-10">
 								<Loader />
 							</div>
-						) : (
+						)}
+
+						{fiveCustomer && fiveCustomer.length > 0 ? (
 							<>
 								<div className="bg-gray-100 py-9">
 									<div className="flex justify-around  mx-auto  font-semibold w-11/12">
@@ -117,66 +118,88 @@ function Dashboard() {
 									</Link>
 								</div>
 							</>
+						) : (
+							<div
+								className="flex justify-center  h-full  items-center"
+								style={{ color: "#743B96", marginTop: "-30px" }}
+							>
+								<ExclamationIcon width="25" />{" "}
+								<span className="pl-5">No Registered Customers</span>
+							</div>
 						)}
 					</div>
 
 					<div className="bg-white px-5 pt-10 pb-10 mb-20 rounded-lg shadow-lg">
 						<h3 className=" ml-6 mb-10">Merchant list</h3>
-						{merchants && merchants.isLoading ? (
-							<div className="py-10">
+						{merchants.isLoading && fiveMerchant && (
+							<div
+								className="flex justify-center  h-full  items-center"
+								style={{ marginTop: "-30px" }}
+							>
 								<Loader />
 							</div>
-						) : (
-							<>
-								<div className="bg-gray-100 py-9">
-									<div className="flex justify-around  mx-auto  font-semibold w-11/12">
-										<h4 className="w-4/12">Name</h4>
-										<h4>Number of events</h4>
-										<h4>Status</h4>
-									</div>
-								</div>
-								{fiveMerchant &&
-									fiveMerchant.map((item, index) => {
-										return (
-											<div
-												key={index}
-												className="flex justify-around mt-5 even:bg-gray-100 py-6 items-center "
-											>
-												<div className="flex items-center w-5/12">
-													<img
-														className=" mr-8 hidden lg:block"
-														src={item.account.avatar}
-														style={{
-															borderRadius: "50%",
-															width: "50px",
-															height: "45px",
-														}}
-													/>
-													{item.account.last_name} {item.account.first_name}
-												</div>
-
-												<h4>{item.auctions.length}</h4>
-
-												<h4
-													className={`${
-														item.account.verified
-															? "text-green-600"
-															: "text-red-600"
-													}`}
-												>
-													{item.account.verified ? "Verified" : "Unverified"}
-												</h4>
-											</div>
-										);
-									})}
-
-								<div className=" flex mt-10 justify-center">
-									<Link href="/admin/merchant-management">
-										<Button name="View more" paddingX="12px" paddingY="7px" />
-									</Link>
-								</div>
-							</>
 						)}
+
+						{!merchants.isLoading &&
+							(fiveMerchant && fiveMerchant.length > 0 ? (
+								<>
+									<div className="bg-gray-100 py-9">
+										<div className="flex justify-around  mx-auto  font-semibold w-11/12">
+											<h4 className="w-4/12">Name</h4>
+											<h4>Number of events</h4>
+											<h4>Status</h4>
+										</div>
+									</div>
+									{fiveMerchant &&
+										fiveMerchant.map((item, index) => {
+											return (
+												<div
+													key={index}
+													className="flex justify-around mt-5 even:bg-gray-100 py-6 items-center "
+												>
+													<div className="flex items-center w-5/12">
+														<img
+															className=" mr-8 hidden lg:block"
+															src={item.account.avatar}
+															style={{
+																borderRadius: "50%",
+																width: "50px",
+																height: "45px",
+															}}
+														/>
+														{item.account.last_name} {item.account.first_name}
+													</div>
+
+													<h4>{item.auctions.length}</h4>
+
+													<h4
+														className={`${
+															item.account.verified
+																? "text-green-600"
+																: "text-red-600"
+														}`}
+													>
+														{item.account.verified ? "Verified" : "Unverified"}
+													</h4>
+												</div>
+											);
+										})}
+
+									<div className=" flex mt-10 justify-center">
+										<Link href="/admin/merchant-management">
+											<Button name="View more" paddingX="12px" paddingY="7px" />
+										</Link>
+									</div>
+								</>
+							) : (
+								<div
+									className="flex justify-center  h-full  items-center"
+									style={{ color: "#743B96", marginTop: "-30px" }}
+								>
+									<ExclamationIcon width="25" />{" "}
+									<span className="pl-5">No Registered Merchant</span>
+								</div>
+							))}
 					</div>
 				</div>
 
@@ -184,11 +207,23 @@ function Dashboard() {
 				<div className="bg-white px-5 pt-10 pb-10 mb-20 rounded-lg shadow-lg">
 					<h3 className=" ml-6 mb-10">Top Auctions by Bids</h3>
 
-					{allEvent && allEvent.isLoading ? (
+					{!isLoading && allEvent < 1 && (
+						<div
+							className="flex justify-center lg:pt-10 pb-10"
+							style={{ color: "#743B96" }}
+						>
+							<ExclamationIcon width="25" />{" "}
+							<span className="pl-5">No Auctions</span>
+						</div>
+					)}
+
+					{isLoading && (
 						<div className="py-10">
 							<Loader />
 						</div>
-					) : (
+					)}
+
+					{ !isLoading && allEvent && (
 						<>
 							<div className="bg-gray-100 py-9">
 								<div className="flex justify-around  mx-auto  font-semibold w-11/12">
@@ -325,3 +360,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+Dashboard.requireAdminAuth = true;

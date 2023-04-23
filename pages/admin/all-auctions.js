@@ -8,18 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { ClipLoader } from "react-spinners";
 import { Widget } from "@uploadcare/react-widget";
+
+import { useRouter } from "next/router";
 // import Button from "../../components/ui/button/";
 import {
 	addProduct,
 	getProducts,
 	createBidEvent,
 } from "../../services/merchant";
-// import {
-// 	adminAddProduct,
-// 	adminSingleEvent,
-// 	getAllEventsList,
-// 	// createBidEvent,
-// } from "../../services/admin";
 import {
 	getAllEvents,
 	getSingleEvent,
@@ -31,7 +27,7 @@ import {
 } from "../../store/slices/adminSlice/adminEventSlice";
 import { formatNumber, truncateString } from "../../utils";
 import styles from "../../styles/admin/merchant-events.module.scss";
-import { DeleteIcon, Plus } from "../../public/svg/icons";
+import { DeleteIcon, ExclamationIcon, Plus } from "../../public/svg/icons";
 import { getAllCategories } from "../../services/customer";
 import { toast } from "react-toastify";
 import Pagination from "../../components/Pagination";
@@ -39,11 +35,12 @@ import { paginate } from "../../utils";
 import Loader from "../../components/loader";
 import useWindowDimension from "../../hooks/useWindowDimension";
 
-function Bids() {
+function AllBids() {
 	const dispatch = useDispatch();
 	const { allEvent, isLoading } = useSelector(
 		(state) => state.adminEvent.allEvents
 	);
+	const router = useRouter();
 	const { user } = useSelector((state) => state.auth.admin);
 	const [viewBid, setViewBid] = useState(false);
 	const [createEventModal, setCreateEventModal] = useState(false);
@@ -194,7 +191,6 @@ function Bids() {
 			merchant_id: "1",
 			// merchant_id: user.merchant.id.toString(),
 		};
-		console.log(body);
 		addProduct(body)
 			.then((response) => {
 				setLoading(false);
@@ -242,63 +238,78 @@ function Bids() {
 	const paginatedData = paginate(allEvent, currentPage, pageSize);
 	return (
 		<AdminLayout>
-			<div className="pt-10 pb-20 mt-1" style={{ backgroundColor: "#E5E5E5" }}>
-
-{width < 780 && (
-	<div className="sm:flex-col lg:flex-row justify-between items-center">
-	<h3 className="py-20 text-5xl font-semibold  mt-1 text-semibold text-black">
-		Event Management
-	</h3>
-	<div className="flex mr-20">
-		<div
-			className=" flex items-center py-4 px-5 rounded-lg bg-purple-900 mr-5 text-white"
-			onClick={openCreateEventModal}
-		>
-			<Plus />
-			<button className="ml-3">Create Event</button>
-		</div>
-		<Button
-			name="Create Category"
-			paddingX="20px"
-			paddingY="7px"
-			onClick={openCategory}
-		/>
-	</div>
-</div>
-)}
-
-
-			{width >= 780 && (
-					<div className="flex lg:flex-row justify-between items-center">
-					<h3 className="py-20 text-5xl font-semibold pl-20 mt-1 text-semibold text-black">
-						Event Management
-					</h3>
-					<div className="flex mr-20">
-						<div
-							className=" flex items-center py-4 px-5 rounded-lg bg-purple-900 mr-5 text-white"
-							onClick={openCreateEventModal}
-						>
-							<Plus />
-							<button className="ml-3">Create Event</button>
+			<div
+				className="pt-10 pb-20 mt-1 w-11/12 mx-auto"
+				style={{ backgroundColor: "#E5E5E5" }}
+			>
+				{width < 780 && (
+					<div className="sm:flex-col lg:flex-row justify-between items-center">
+						<h3 className="py-20 text-5xl font-semibold  mt-1 text-semibold text-black">
+							All Auctions
+						</h3>
+						<div className="flex ">
+							{/* <div
+								className=" flex items-center py-4 px-5 rounded-lg bg-purple-900 mr-5 text-white"
+								onClick={openCreateEventModal}
+							>
+								<Plus />
+								<button className="ml-3">Create Event</button>
+							</div> */}
+							<Button
+								name="Create Category"
+								paddingX="20px"
+								paddingY="7px"
+								onClick={openCategory}
+							/>
 						</div>
-						<Button
-							name="Create Category"
-							paddingX="20px"
-							paddingY="7px"
-							onClick={openCategory}
-						/>
 					</div>
-				</div>
-			)}
+				)}
 
-				{!allEvent ? (
+				{width >= 780 && (
+					<div className="flex lg:flex-row justify-between items-center">
+						<h3 className="py-20 text-5xl font-semibold  mt-1 text-semibold text-black">
+							All Auctions
+						</h3>
+						<div className="flex ">
+							{/* <div
+								className=" flex items-center py-4 px-5 rounded-lg bg-purple-900 mr-5 text-white"
+								onClick={openCreateEventModal}
+							>
+								<Plus />
+								<button className="ml-3">Create Event</button>
+							</div> */}
+							<Button
+								name="Create Category"
+								paddingX="20px"
+								paddingY="7px"
+								onClick={openCategory}
+							/>
+						</div>
+					</div>
+				)}
+
+				{isLoading && (
 					<div className="h-screen" style={{ marginTop: "-160px" }}>
 						<Loader />
 					</div>
-				) : width >= 780 ? (
+				)}
+
+				{paginatedData.length < 1 && (
+					<div className=" h-screen">
+						<div
+							className="flex justify-center mt-20 text-2xl lg:text-4xl items-center"
+							style={{ color: "#743B96", marginTop: "120px" }}
+						>
+							<ExclamationIcon width="35" />
+							<span className="pl-5">No Auctions</span>
+						</div>
+					</div>
+				)}
+
+				{paginatedData.length > 0 && width >= 780 && (
 					<>
 						<Table
-							name="eventMgt"
+							name="allAuctions"
 							thead={thead}
 							data={paginatedData}
 							isSearch={true}
@@ -314,7 +325,9 @@ function Bids() {
 							pageSize={pageSize}
 						/>
 					</>
-				) : (
+				)}
+
+				{paginatedData.length > 0 && width < 780 && (
 					<>
 						{paginatedData.map((item, index) => {
 							return (
@@ -413,7 +426,7 @@ function Bids() {
 							return (
 								<li
 									key={index}
-									className="flex justify-between p-5 even:bg-gray-100 hover:bg-gray-100"
+									className="flex justify-between p-5 even:bg-gray-100 hover:bg-gray-100 capitalize"
 								>
 									{" "}
 									{item.name}
@@ -458,24 +471,37 @@ function Bids() {
 											event.started &&
 											!event.canceled &&
 											!event.ended && (
-												<h3 className="text-green-600 mb-10 text-2xl lg:">Ongoing</h3>
+												<h3 className="text-green-600 mb-10 text-2xl lg:">
+													Ongoing
+												</h3>
 											)}
 
 										{!event.started && event.approved && (
-											<h3 className="text-red-600 mb-10 text-2xl lg:">Not started</h3>
+											<h3 className="text-red-600 mb-10 text-2xl lg:">
+												Not started
+											</h3>
 										)}
 
 										{!event.approved && (
-											<h3 className="text-red-600 mb-10 text-2xl lg:">Unapproved</h3>
+											<h3 className="text-red-600 mb-10 text-2xl lg:">
+												Unapproved
+											</h3>
 										)}
 
 										{event.canceled && (
-											<h3 className="text-red-600 mb-10 text-2xl lg:">Canceled</h3>
+											<h3 className="text-red-600 mb-10 text-2xl lg:">
+												Canceled
+											</h3>
 										)}
 
-										{event.started && event.ended && !event.canceled && (
-											<h3 className="text-violet-600 mb-10 text-2xl lg:">Concluded</h3>
-										)}
+										{event.started &&
+											event.ended &&
+											!event.canceled &&
+											event.approved && (
+												<h3 className="text-violet-600 mb-10 text-2xl lg:">
+													Concluded
+												</h3>
+											)}
 
 										{event.approved &&
 											!event.canceled &&
@@ -542,7 +568,10 @@ function Bids() {
 												border="none"
 												fontSize="12px"
 												isBoxShadow={true}
-												onClick={() => dispatch(_approveBid(event.id))}
+												onClick={() => {
+													dispatch(_approveBid(event.id));
+													router.reload(window.location.pathname);
+												}}
 											/>
 										)}
 									</>
@@ -558,23 +587,27 @@ function Bids() {
 									</h3>
 								</div>
 								<div className="px-20 py-10 flex justify-between lg:justify-evenly lg:w-full w-11/12">
-								<div className="lg:text-3xl text-2xl font-semibold  ">
+									<div className="lg:text-3xl text-2xl font-semibold  ">
 										<p className="w-60 lg:w-full mt-7 lg:mt-10">
-											Merchant name: 
+											Merchant name:
 										</p>
 										<p className="w-40 lg:w-full mt-7 lg:mt-10">Product :</p>
 										<p className="w-40 lg:w-full mt-7 lg:mt-10">Start date :</p>
 										<p className="w-40 lg:w-full mt-7 lg:mt-10">End date: :</p>
 										<p className="w-40 lg:w-full mt-7 lg:mt-10">Amount :</p>
-										<p className="w-40 lg:w-full mt-7 lg:mt-10">Winner :</p>
+										{/* <p className="w-40 lg:w-full mt-7 lg:mt-10">Winner :</p> */}
 									</div>
 									<div className="ml-4 ">
 										<p className="w-58 lg:w-full mt-7 lg:mt-10">
 											Akinpelumi Lade
 										</p>
 										<p className="w-64 lg:w-full mt-3 lg:mt-10">
-										{width >= 780 &&<span>{truncateString(event.product.name, 34)}</span>}
-											{width < 780 && <span> {truncateString(event.product.name, 13)}</span>}
+											{width >= 780 && (
+												<span>{truncateString(event.product.name, 34)}</span>
+											)}
+											{width < 780 && (
+												<span> {truncateString(event.product.name, 13)}</span>
+											)}
 										</p>
 										<p className="w-58 lg:w-full mt-3 lg:mt-6">
 											{new Date(event.start_time).toDateString()}
@@ -585,10 +618,10 @@ function Bids() {
 										<p className="w-40 lg:w-full mt-3 lg:mt-6">
 											{formatNumber(event.access_amount)}{" "}
 										</p>
-										<p className="w-40 lg:w-full mt-3 lg:mt-10">
+										{/* <p className="w-40 lg:w-full mt-3 lg:mt-10">
 											{" "}
 											{event.winner ? event.winner : "Undecided"}
-										</p>
+										</p> */}
 									</div>
 								</div>
 							</div>
@@ -858,4 +891,5 @@ function Bids() {
 	);
 }
 
-export default Bids;
+export default AllBids;
+AllBids.requireAdminAuth = true;

@@ -120,7 +120,9 @@ const OngoingBid = () => {
 					);
 				})}
 			{events && events.length < 1 && (
-				<p className="justify-center">You currently have no ongoing Bids</p>
+				<div className={`justify-center flex  items-center lg:text-4xl text-center h-full ${styles.mobile_div}`}>
+					You currently have no ongoing Bids
+				</div>
 			)}
 		</div>
 	);

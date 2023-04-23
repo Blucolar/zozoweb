@@ -23,11 +23,10 @@ const Activity = () => {
 		dispatch(_getWonBidEvents(user?.customer.id));
 	}, [dispatch]);
 
+	let unpaid_bids;
 
-	let unpaid_bids
-	
-	if(events ) unpaid_bids= events.filter((item)=>!item.payment_made )
-	
+	if (events) unpaid_bids = events.filter((item) => item.payment_made == false);
+
 	const content = (
 		<>
 			<div className="flex justify-between py-20">
@@ -44,7 +43,7 @@ const Activity = () => {
 				</div>
 			</div>
 
-			<div >
+			<div>
 				{width >= 790 && events && (
 					<div className={`${styles.won_bid}`}>
 						<div className={`flex justify-between mb-10`}>
@@ -58,29 +57,30 @@ const Activity = () => {
 
 						<div>
 							{unpaid_bids?.map((item, index) => {
-								
 								return (
 									<div
 										key={index}
 										className=" flex items-center justify-between text-2xl mb-20"
 									>
-										<p className={`flex items-center ${styles.item_row}`} >
+										<p className={`flex items-center ${styles.item_row}`}>
 											<img src={item.product.images.main} />
 											<span className="ml-4">
 												{truncateString(item.product.name, 15)}
 											</span>
 										</p>
 										<p>
-											&#x20A6; <span>{Number(item.access_amount).toLocaleString()}</span>
+											&#x20A6;{" "}
+											<span>{Number(item.access_amount).toLocaleString()}</span>
 										</p>
 										<p>
-											&#x20A6; 
+											&#x20A6;
 											<span>
 												{Number(item.minimum_amount).toLocaleString()}
 											</span>
 										</p>
 										<p>
-										&#x20A6; <span>{Number(item.last_amount).toLocaleString()}</span>
+											&#x20A6;{" "}
+											<span>{Number(item.last_amount).toLocaleString()}</span>
 										</p>
 										{/* <p> {new Date(item.start_time).toDateString()}</p>
                   <p> {new Date(item.end_time).toDateString()}</p> */}
@@ -128,23 +128,26 @@ const Activity = () => {
 		</>
 	);
 	return (
-		<div className="activity_form w-11/12 mx-auto mt-20">
+		<div className={`activity_form w-11/12 mx-auto mt-20`}>
 			{loading ? (
-				<div>Loading...</div>
+				<div className="pb-5">Loading...</div>
 			) : (
 				<div>
 					{unpaid_bids?.length > 0 ? (
 						content
 					) : (
-						<div className="mt-40">
+						<div className={`lg:mt-40 ${styles.won_bids}`}>
 							{" "}
-							<h3 className="text-center mt-20"> No Won Bids</h3>{" "}
+							<h3 className="text-center lg:mt-20 text-3xl ">
+								{" "}
+								No Won Bids Pending Payment
+							</h3>{" "}
 							<Link href="/">
 								<Button
 									name="Continue Shopping"
-									paddingY="15px"
+									paddingY="12px"
 									width="90%"
-									className="mt-20 ml-10"
+									className="lg:mt-20 mt-5 ml-10 mb-10"
 								/>
 							</Link>
 						</div>

@@ -46,7 +46,10 @@ export default function ProductsSection({ title, products }) {
           </span>
         </div>
         {products && (
-          <div className={styles.content}>
+          <div
+            className={styles.content}
+            style={products.length < 4 ? { display: "flex" } : null}
+          >
             {products?.map((product) => (
               <Card
                 key={product.product_id}
@@ -102,7 +105,7 @@ export function Card({ product }) {
     if (user) {
       return;
     }
-    toast.warning("Login to continue!");
+    toast.info("Login to continue!");
   }
 
   return (
