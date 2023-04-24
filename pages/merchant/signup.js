@@ -84,7 +84,7 @@ export default function Index() {
     schema1.isValid(body, { abortEarly: false }).then((response) => {
       if (response) {
         setLoading(true);
-        fetch(`http://bilikie.com/api/v1/check/${signupForm.email}`)
+        fetch(`https://bilikie.com/api/v1/check/${signupForm.email}`)
           .then((response) => response.json())
           .then((data) => {
             setLoading(false);
